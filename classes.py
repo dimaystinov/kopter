@@ -6,6 +6,9 @@ class Drone:
         self.x: float = x
         self.y: float = y
         self.angle: float = angle
+        self.check: bool = True
+        self.max_angle = 0
+        self.max_power = -1
 
     def get_angle(self):
         return self.angle
@@ -17,8 +20,11 @@ class Drone:
         self.angle += angle
         if self.angle < 0:
             self.angle = math.pi * 2 - abs(self.angle)
-        elif angle > 2 * math.pi:
+            self.check = False
+        elif self.angle > 2 * math.pi:
             self.angle = self.angle - math.pi * 2
+            self.check = False
+        self.angle = round(self.angle, 2)
 
     def get_position(self):
         return self.x, self.y
@@ -45,3 +51,14 @@ class Camera:
 
     def get_position(self):
         return self.x_poi, self.y_poi
+
+
+class Points:
+    def __init__(self):
+        self.back = []
+
+    def push(self, drone: Drone):
+        self.back.append(drone.get_position())
+
+    def get_all_points(self):
+        return self.back

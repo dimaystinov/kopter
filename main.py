@@ -9,3 +9,4 @@ if __name__ == "__main__":
     while True:
         window.get_keyboard(drone)
         window.update(drone, camera)
+        functions.get_max(drone, camera)
