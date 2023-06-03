@@ -1,5 +1,5 @@
 import math
-
+import random
 
 class Drone:
     def __init__(self, x: float, y: float, angle: float):
@@ -8,7 +8,7 @@ class Drone:
         self.angle: float = angle
         self.check: bool = True
         self.max_angle = 0
-        self.max_power = -1
+        self.max_power = 0
 
     def get_angle(self):
         return self.angle
@@ -37,6 +37,11 @@ class Drone:
         self.x += x
         self.y += y
 
+    def fly(self, x: float, y: float, z: float):
+        self.y += math.sin(self.angle - z * math.pi) * y
+        self.x += math.cos(self.angle - z * math.pi) * x
+
+
 
 class Camera:
     def __init__(self, x_poi: float, y_poi: float, a: float):
@@ -46,8 +51,21 @@ class Camera:
 
     def get_power_of_poi(self, drone: Drone):
         distance = math.sqrt((drone.x - self.x_poi) ** 2 + (drone.y - self.y_poi) ** 2)
-        angle_to_point = math.atan((self.y_poi - drone.y) / (self.x_poi - drone.x))
-        return self.a / (distance ** 2) * math.cos(angle_to_point - drone.angle)
+        angle_to_point = math.atan2((self.y_poi - drone.y),(self.x_poi - drone.x))
+        return self.a / (distance ** 2) * math.cos(angle_to_point - drone.angle) #* float(random.randint(70, 120)
+                                                                                  #           / 100)
+
+    def get_power_of_poi_pos(self, x: float, y: float, angle: float):
+        distance = math.sqrt((x - self.x_poi) ** 2 + (y - self.y_poi) ** 2)
+        angle_to_point = math.atan2((self.y_poi - y), (self.x_poi - x))
+        return self.a / (distance ** 2) * math.cos(angle_to_point - angle) * float(random.randint(70, 120) / 100)
+
+    def get_power_of_poi_many_times(self, drone: Drone, times: int = 0):
+        all = 0
+        for i in range(times):
+            all += self.get_power_of_poi(drone)
+        return all/times
+
 
     def get_position(self):
         return self.x_poi, self.y_poi
@@ -58,7 +76,7 @@ class Points:
         self.back = []
 
     def push(self, drone: Drone):
-        self.back.append(drone.get_position())
+        self.back.append((drone.get_position(), drone.get_angle()))
 
     def get_all_points(self):
         return self.back
