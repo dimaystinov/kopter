@@ -1,6 +1,9 @@
 import math
 import random
 
+import setting
+
+
 class Drone:
     def __init__(self, x: float, y: float, angle: float):
         self.x: float = x
@@ -52,13 +55,14 @@ class Camera:
     def get_power_of_poi(self, drone: Drone):
         distance = math.sqrt((drone.x - self.x_poi) ** 2 + (drone.y - self.y_poi) ** 2)
         angle_to_point = math.atan2((self.y_poi - drone.y),(self.x_poi - drone.x))
-        return self.a / (distance ** 2) * math.cos(angle_to_point - drone.angle) * float(random.randint(90, 110)
-                                                                                             / 100)
+        return round(self.a / (distance ** 2) * math.cos(angle_to_point - drone.angle) * float(random.randint(100 - setting.PROCENT_ERROR_RATE, 100 + setting.PROCENT_ERROR_RATE)
+                                                                                             / 100),3)
 
     def get_power_of_poi_pos(self, x: float, y: float, angle: float):
         distance = math.sqrt((x - self.x_poi) ** 2 + (y - self.y_poi) ** 2)
         angle_to_point = math.atan2((self.y_poi - y), (self.x_poi - x))
-        return self.a / (distance ** 2) * math.cos(angle_to_point - angle) * float(random.randint(90, 110) / 100)
+        return round(self.a / (distance ** 2) * math.cos(angle_to_point - angle) * float(random.randint(100 - setting.PROCENT_ERROR_RATE, 100 + setting.PROCENT_ERROR_RATE)
+                                                                                             / 100),3)
 
     def get_power_of_poi_many_times(self, drone: Drone, times: int = 0):
         all = 0
